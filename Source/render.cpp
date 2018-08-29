@@ -9021,46 +9021,44 @@ LABEL_205:
 
 void __fastcall world_draw_black_tile(unsigned char *pbDst)
 {
-	unsigned char *tmp_pbDst; // edi MAPDST
-	signed int xx_32; // edx
-	signed int i; // ebx MAPDST
-	signed int j; // ecx MAPDST
-	signed int yy_32; // edx
 
-	tmp_pbDst = pbDst;
-	xx_32 = 30;
-	for ( i = 1; ; ++i )
+	DWORD i;
+	DWORD j;
+
+	// bottom part of the tile
+
+	int offset = 30;
+	for ( i = 1; ; offset -= 2, i++ )
 	{
-		tmp_pbDst += xx_32;
-		j = i;
-		do
+		// move to offset in tile
+		pbDst += offset;
+		for ( j = i; j; j-- )
 		{
-			*(_DWORD *)tmp_pbDst = 0;
-			tmp_pbDst += 4;
-			--j;
+			*(DWORD *)pbDst = 0;
+			pbDst += 4;
 		}
-		while ( j );
-		tmp_pbDst = &tmp_pbDst[xx_32 - 832];
-		if ( !xx_32 )
+
+		// finish the line and move one line up
+		pbDst += offset - (768 + 32 + 32);
+
+		if ( offset == 0 )
+		{
 			break;
-		xx_32 -= 2;
-	}
-	yy_32 = 2;
-	i = 15;
-	do
-	{
-		tmp_pbDst += yy_32;
-		j = i;
-		do
-		{
-			*(_DWORD *)tmp_pbDst = 0;
-			tmp_pbDst += 4;
-			--j;
 		}
-		while ( j );
-		tmp_pbDst = &tmp_pbDst[yy_32 - 832];
-		--i;
-		yy_32 += 2;
 	}
-	while ( yy_32 != 32 );
+
+	offset = 2;
+	for ( i = 15; offset != 32; offset += 2, i-- )
+	{
+		// move to offset in tile
+		pbDst += offset;
+		for ( j = i; j; j-- )
+		{
+			*(DWORD *)pbDst = 0;
+			pbDst += 4;
+		}
+
+		// finish the line and move one line up
+		pbDst += offset - (768 + 32 + 32);
+	}
 }
